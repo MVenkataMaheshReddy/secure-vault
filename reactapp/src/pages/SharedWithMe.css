@@ -1,0 +1,297 @@
+.shared-with-me-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.shared-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 100%);
+  color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(11, 31, 58, 0.25);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.shared-header-info h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+.shared-header-info p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 650px;
+  line-height: 1.5;
+}
+
+.shared-header-stats .stat-pill {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.shared-header-stats .stat-label {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.shared-header-stats .stat-value {
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.shared-controls-bar {
+  margin-bottom: 1.5rem;
+}
+
+.shared-search-input {
+  width: 100%;
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.shared-search-input:focus {
+  outline: none;
+  border-color: var(--navy-700);
+  box-shadow: 0 0 0 3px rgba(29, 59, 102, 0.15);
+}
+
+.shared-table-wrapper {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.shared-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.shared-table th {
+  background: #f8fafc;
+  padding: 1rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.shared-table td {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.shared-row:hover {
+  background: #f8fafc;
+}
+
+.shared-doc-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.doc-clickable-link {
+  font-weight: 700;
+  color: #1e293b;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.doc-clickable-link:hover {
+  color: var(--navy-700);
+  text-decoration: underline;
+}
+
+.file-info-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.category-pill {
+  background: #e2e8f0;
+  color: #334155;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.shared-by-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.shared-by-email {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.permission-badge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.permission-badge.view {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.permission-badge.download {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.perpetual-badge {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.expiry-date {
+  color: #b45309;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-tbl-action {
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.btn-tbl-action.view {
+  background: var(--navy-100);
+  color: var(--navy-700);
+  border-color: #cbd5e1;
+}
+
+.btn-tbl-action.view:hover {
+  background: #dbe4f0;
+}
+
+.btn-tbl-action.download {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.btn-tbl-action.download:hover:not(:disabled) {
+  background: #dcfce7;
+}
+
+.btn-tbl-action.download.disabled,
+.btn-tbl-action.download:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.shared-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  background: #fafafa;
+}
+
+.btn-page {
+  padding: 0.5rem 1rem;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.preview-modal-content {
+  width: 90%;
+  max-width: 900px;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-body {
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}

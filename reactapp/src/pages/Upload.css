@@ -1,0 +1,361 @@
+.upload-page {
+  margin-top: 20px;
+  min-height: 80vh;
+  background: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.upload-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.upload-header h1 {
+  font-size: 2.3rem;
+  margin-bottom: 8px;
+  color: var(--navy-900);
+  font-weight: 800;
+}
+
+.upload-header p {
+  font-size: 1rem;
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+/* Alerts */
+.upload-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.upload-alert.success {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.upload-alert.error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+.upload-alert.warning {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-icon {
+  font-size: 1.4rem;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-view-doc {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view-doc:hover {
+  background: #047857;
+}
+
+.btn-close-alert {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.btn-close-alert:hover {
+  opacity: 1;
+}
+
+/* Layout */
+.upload-sections {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.upload-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.main-card {
+  flex: 2;
+  min-width: 360px;
+  max-width: 650px;
+}
+
+.side-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 380px;
+  background: #f8fafc;
+}
+
+.upload-card h2 {
+  margin-bottom: 18px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.side-description {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 30px 20px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-bottom: 20px;
+}
+
+.dropzone:hover,
+.dropzone.dragging {
+  border-color: var(--navy-700);
+  background: var(--navy-100);
+  transform: scale(1.01);
+}
+
+.dropzone.has-file {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.dropzone-prompt .upload-cloud-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dropzone-prompt .primary-text {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.dropzone-prompt .sub-text {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.selected-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #bbf7d0;
+}
+
+.file-icon {
+  font-size: 1.8rem;
+  margin-right: 12px;
+}
+
+.file-meta {
+  text-align: left;
+  flex: 1;
+}
+
+.file-meta strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1e293b;
+  word-break: break-all;
+}
+
+.file-meta span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.btn-remove-file {
+  background: #fee2e2;
+  border: none;
+  color: #b91c1c;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Form inputs */
+.form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.upload-card input,
+.upload-card select,
+.upload-card textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #1e293b;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.upload-card input:focus,
+.upload-card select:focus,
+.upload-card textarea:focus {
+  border-color: var(--navy-700);
+  box-shadow: 0 0 0 3px rgba(29, 59, 102, 0.15);
+}
+
+.upload-card textarea {
+  resize: vertical;
+}
+
+/* Progress bar */
+.progress-container {
+  margin: 18px 0;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-700);
+  margin-bottom: 6px;
+}
+
+.progress-bar-track {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--navy-700), var(--accent));
+  transition: width 0.3s ease;
+}
+
+/* Buttons */
+.upload-submit-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--navy-900);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.3);
+}
+
+.upload-submit-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 166, 35, 0.4);
+}
+
+.upload-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 20px 0;
+}
+
+.folder-create-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.folder-create-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.loading-sm {
+  font-size: 0.85rem;
+  color: #64748b;
+}

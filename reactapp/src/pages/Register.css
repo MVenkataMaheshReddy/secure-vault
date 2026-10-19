@@ -1,0 +1,140 @@
+
+
+.register-container {
+    margin-top: 40px;
+  display: flex;
+  width: 120%;
+  height: 120%;
+  
+  
+}
+
+
+.register-image {
+  width: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.register-image img {
+    
+  width: 90%;
+  height: 80%;
+  object-fit: cover;
+
+}
+
+
+.register-form {
+  width: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.form-box {
+  width: 69%;
+  max-width: 400px;
+}
+
+.form-box h2 {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: black;
+  
+}
+
+
+.error-box {
+  background: #ffe5e5;
+  color: #d8000c;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+.form-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 18px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-box input:focus {
+  border-color: var(--navy-700);
+  box-shadow: 0 0 0 3px rgba(29, 59, 102, 0.15);
+}
+
+.form-box button {
+  width: 50%;
+  padding: 12px;
+  background: var(--navy-700);
+  color: white;
+  border: none;
+  border-radius: 60px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: block;     
+  margin: 20px auto; 
+}
+
+.form-box button:hover {
+  background: var(--navy-800);
+}
+
+.register-footer a {
+  color: var(--navy-700);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-footer a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.role-select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.role-select:focus {
+  border-color: var(--navy-700);
+  outline: none;
+}
+
+.role-select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,0 12,0 6,6" style="fill:%23666"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+

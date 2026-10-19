@@ -1,0 +1,39 @@
+# Environment and secrets
+.env
+*.env
+*.env.local
+.env.*.local
+
+# React frontend
+reactapp/node_modules/
+reactapp/build/
+reactapp/.env
+reactapp/.env.*
+
+# Spring Boot backend
+springapp/target/
+springapp/.mvn/
+springapp/mvnw
+springapp/mvnw.cmd
+springapp/*.log
+
+# IDE / editor settings
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Storage / uploads
+springapp/storage/documents/*
+!springapp/storage/documents/.gitkeep
+springapp/storage/qr/*
+!springapp/storage/qr/.gitkeep
+
+# Misc
+*.log
+*.swp
+*.swo

@@ -1,0 +1,33 @@
+:root {
+  --navy-900: #0B1F3A;  /* navbar background */
+  --navy-800: #13294B;  /* hover / highlighted user container */
+  --navy-700: #1D3B66;  /* primary buttons, active tab underline */
+  --navy-100: #E6ECF5;  /* soft backgrounds, badges */
+  --accent:   #F5A623;  /* Upload button, key highlights, active nav underline */
+  --accent-hover: #D98E10;
+  --bg:       #F3F5F9;
+  --card:     #FFFFFF;
+  --text:     #14213D;
+  --muted:    #5B6B82;
+  --success:  #1E7B4F;
+  --danger:   #C0392B;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base body styles */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}

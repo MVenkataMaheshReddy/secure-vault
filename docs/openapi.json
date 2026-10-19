@@ -1,0 +1,5407 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "SecureVault REST API",
+    "description" : "Intelligent Digital Locker & Document Management Platform API with JWT Authentication, Versioning, Approval Workflow, and Zero-Knowledge Verification",
+    "contact" : {
+      "name" : "SecureVault Security & Engineering Team",
+      "email" : "support@securevault.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "Folder Management",
+    "description" : "Endpoints for organizing documents into folders"
+  }, {
+    "name" : "8. Approvals",
+    "description" : "Endpoints for document review, approval, and rejection workflows"
+  }, {
+    "name" : "User Management",
+    "description" : "Endpoints for managing user profiles and querying users"
+  }, {
+    "name" : "1. Authentication",
+    "description" : "Endpoints for user registration, login authentication, current user retrieval, and token revocation"
+  }, {
+    "name" : "4. Documents",
+    "description" : "Endpoints for document lifecycle: upload, retrieve, update, delete, version history, search, and QR code access"
+  }, {
+    "name" : "9. Verification & QR",
+    "description" : "Public and administrative endpoints for cryptographic document verification and file authenticity checks"
+  }, {
+    "name" : "Admin Audit Logs",
+    "description" : "Endpoints for administrator audit trail querying and compliance export"
+  }, {
+    "name" : "Admin Management",
+    "description" : "Endpoints for administrator actions: role assignment, user lock/enable, and platform management"
+  }, {
+    "name" : "Activity Logs",
+    "description" : "Legacy activity log endpoints (Admin only)"
+  }, {
+    "name" : "7. Document Sharing",
+    "description" : "Endpoints for document sharing, permissions delegation, active shares listing, and share revocation"
+  }, {
+    "name" : "Analytics & Reporting",
+    "description" : "Endpoints for statistical dashboards, metrics, category counts, and monthly breakdown"
+  } ],
+  "paths" : {
+    "/users/update/{id}" : {
+      "put" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Update user",
+        "description" : "Update user details. Restricted to account owner or ADMIN. Non-admins cannot alter roles.",
+        "operationId" : "updateUser",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/update/{id}" : {
+      "put" : {
+        "tags" : [ "Folder Management" ],
+        "summary" : "Update folder",
+        "description" : "Update folder details",
+        "operationId" : "updateFolder",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FolderDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/verification/revoke" : {
+      "put" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Revoke document verification",
+        "description" : "Revokes the active verification status of a document (ADMIN or VERIFIER)",
+        "operationId" : "revokeVerification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VerificationRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/verification/revoke" : {
+      "put" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Revoke document verification",
+        "description" : "Revokes the active verification status of a document (ADMIN or VERIFIER)",
+        "operationId" : "revokeVerification_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VerificationRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document by ID",
+        "description" : "Retrieves document metadata and latest version details if authorized",
+        "operationId" : "getDocumentById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Update document metadata",
+        "description" : "Updates title, category, description, and tags without altering file content",
+        "operationId" : "updateDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateDocumentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Soft delete document",
+        "description" : "Flags the document as deleted, moving it to trash without erasing file storage",
+        "operationId" : "deleteDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document by ID",
+        "description" : "Retrieves document metadata and latest version details if authorized",
+        "operationId" : "getDocumentById_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Update document metadata",
+        "description" : "Updates title, category, description, and tags without altering file content",
+        "operationId" : "updateDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateDocumentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Soft delete document",
+        "description" : "Flags the document as deleted, moving it to trash without erasing file storage",
+        "operationId" : "deleteDocument_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users/{id}/roles" : {
+      "put" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Update user roles",
+        "description" : "Admin endpoint to assign roles (e.g. ROLE_REVIEWER, ROLE_VERIFIER, ROLE_EMPLOYEE, ROLE_ADMIN)",
+        "operationId" : "updateUserRoles",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateRolesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/roles" : {
+      "put" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Update user roles",
+        "description" : "Admin endpoint to assign roles (e.g. ROLE_REVIEWER, ROLE_VERIFIER, ROLE_EMPLOYEE, ROLE_ADMIN)",
+        "operationId" : "updateUserRoles_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateRolesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users/{id}/enabled" : {
+      "put" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Enable or disable user account",
+        "description" : "Admin endpoint to lock or unlock a user account",
+        "operationId" : "updateUserEnabled",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateEnabledRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/enabled" : {
+      "put" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Enable or disable user account",
+        "description" : "Admin endpoint to lock or unlock a user account",
+        "operationId" : "updateUserEnabled_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateEnabledRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/register" : {
+      "post" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Register user",
+        "description" : "Public/Admin endpoint to create a user account",
+        "operationId" : "registerUser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/create" : {
+      "post" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Register user",
+        "description" : "Public/Admin endpoint to create a user account",
+        "operationId" : "registerUser_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/create" : {
+      "post" : {
+        "tags" : [ "Folder Management" ],
+        "summary" : "Create folder",
+        "description" : "Create a new folder for categorizing documents",
+        "operationId" : "createFolder",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FolderDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verify/{verificationId}/check-file" : {
+      "post" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "Check file authenticity",
+        "description" : "Validates if an uploaded physical file matches any approved version via SHA-256 checksum without storing the upload",
+        "operationId" : "checkFileAuthenticity",
+        "parameters" : [ {
+          "name" : "verificationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FileCheckResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/{verificationId}/check-file" : {
+      "post" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "Check file authenticity",
+        "description" : "Validates if an uploaded physical file matches any approved version via SHA-256 checksum without storing the upload",
+        "operationId" : "checkFileAuthenticity_1",
+        "parameters" : [ {
+          "name" : "verificationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FileCheckResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/shares" : {
+      "get" : {
+        "tags" : [ "7. Document Sharing" ],
+        "summary" : "List document shares",
+        "description" : "Retrieves all active shares for a specific document (owner or ADMIN)",
+        "operationId" : "getDocumentShares",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DocumentShareDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "7. Document Sharing" ],
+        "summary" : "Share document",
+        "description" : "Grants VIEW or DOWNLOAD permission on a document to another user",
+        "operationId" : "shareDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ShareRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentShareDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/versions/{versionId}/restore" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore prior version",
+        "description" : "Creates a new current version copying the contents of a prior version without deleting history",
+        "operationId" : "restoreVersion",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions/{versionId}/restore" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore prior version",
+        "description" : "Creates a new current version copying the contents of a prior version without deleting history",
+        "operationId" : "restoreVersion_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/versions" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List document versions",
+        "description" : "Retrieves all versions of the document ordered newest first",
+        "operationId" : "getDocumentVersions",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DocumentVersionDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new version",
+        "description" : "Uploads a new revision of the document, enforcing checksum divergence from current version",
+        "operationId" : "uploadNewVersion",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "changeDescription",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List document versions",
+        "description" : "Retrieves all versions of the document ordered newest first",
+        "operationId" : "getDocumentVersions_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DocumentVersionDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new version",
+        "description" : "Uploads a new revision of the document, enforcing checksum divergence from current version",
+        "operationId" : "uploadNewVersion_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "changeDescription",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/verification" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "generateVerification",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VerificationRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/verification" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "generateVerification_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VerificationRecordDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/resubmit" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "resubmitDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/resubmit" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "resubmitDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/restore" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore document from trash",
+        "description" : "Restores a soft-deleted document back to active status",
+        "operationId" : "restoreDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/restore/{id}" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore document from trash",
+        "description" : "Restores a soft-deleted document back to active status",
+        "operationId" : "restoreDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/restore" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore document from trash",
+        "description" : "Restores a soft-deleted document back to active status",
+        "operationId" : "restoreDocument_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/restore/{id}" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Restore document from trash",
+        "description" : "Restores a soft-deleted document back to active status",
+        "operationId" : "restoreDocument_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/ocr/retry" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "retryOcr",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/ocr/retry" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "retryOcr_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List documents",
+        "description" : "Retrieves paginated and filtered list of documents for current user or all for ADMIN",
+        "operationId" : "getAllDocuments",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "createdAt,desc"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "owner",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "search",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new document",
+        "description" : "Uploads document file, validates magic bytes/MIME, calculates SHA-256 checksum, and initializes version 1",
+        "operationId" : "uploadDocument",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tags",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "userId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "folderId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 1
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/upload" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new document",
+        "description" : "Uploads document file, validates magic bytes/MIME, calculates SHA-256 checksum, and initializes version 1",
+        "operationId" : "uploadDocument_1",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tags",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "userId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "folderId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 1
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List documents",
+        "description" : "Retrieves paginated and filtered list of documents for current user or all for ADMIN",
+        "operationId" : "getAllDocuments_1",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "createdAt,desc"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "owner",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "search",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new document",
+        "description" : "Uploads document file, validates magic bytes/MIME, calculates SHA-256 checksum, and initializes version 1",
+        "operationId" : "uploadDocument_2",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tags",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "userId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "folderId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 1
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/upload" : {
+      "post" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Upload new document",
+        "description" : "Uploads document file, validates magic bytes/MIME, calculates SHA-256 checksum, and initializes version 1",
+        "operationId" : "uploadDocument_3",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tags",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "userId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "folderId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 1
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "file" ],
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Register new user",
+        "description" : "Registers a new user account with default EMPLOYEE role and returns created user profile",
+        "operationId" : "register",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Register new user",
+        "description" : "Registers a new user account with default EMPLOYEE role and returns created user profile",
+        "operationId" : "register_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Logout user and revoke token",
+        "description" : "Revokes the active JWT access token by adding its signature to the revocation table",
+        "operationId" : "logout",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Logout user and revoke token",
+        "description" : "Revokes the active JWT access token by adding its signature to the revocation table",
+        "operationId" : "logout_1",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Authenticate user credentials",
+        "description" : "Validates user credentials, increments brute-force counter on failure, and issues JWT access token on success",
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Authenticate user credentials",
+        "description" : "Validates user credentials, increments brute-force counter on failure, and issues JWT access token on success",
+        "operationId" : "login_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit-logs" : {
+      "get" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Get all activity logs",
+        "description" : "Admin endpoint to retrieve legacy activity logs",
+        "operationId" : "getAllLogs",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ActivityLogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Create activity log",
+        "description" : "Record a manual activity log entry",
+        "operationId" : "createLog",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ActivityLogDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivityLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit-logs/create" : {
+      "post" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Create activity log",
+        "description" : "Record a manual activity log entry",
+        "operationId" : "createLog_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ActivityLogDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivityLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activity-logs" : {
+      "get" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Get all activity logs",
+        "description" : "Admin endpoint to retrieve legacy activity logs",
+        "operationId" : "getAllLogs_2",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ActivityLogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Create activity log",
+        "description" : "Record a manual activity log entry",
+        "operationId" : "createLog_2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ActivityLogDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivityLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activity-logs/create" : {
+      "post" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Create activity log",
+        "description" : "Record a manual activity log entry",
+        "operationId" : "createLog_3",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ActivityLogDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivityLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/approvals/{id}/reject" : {
+      "post" : {
+        "tags" : [ "8. Approvals" ],
+        "summary" : "Reject document",
+        "description" : "Rejects a pending document request with mandatory reviewer feedback",
+        "operationId" : "reject",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/approvals/{id}/approve" : {
+      "post" : {
+        "tags" : [ "8. Approvals" ],
+        "summary" : "Approve document",
+        "description" : "Approves a pending document request and triggers QR code generation",
+        "operationId" : "approve",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}" : {
+      "get" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Get user by ID",
+        "description" : "Retrieve a user profile by ID. Restricted to owner or ADMIN.",
+        "operationId" : "getUserById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/fetch" : {
+      "get" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Get all users",
+        "description" : "Admin-only endpoint to retrieve all registered users",
+        "operationId" : "getAllUsers",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UserDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{id}" : {
+      "get" : {
+        "tags" : [ "Folder Management" ],
+        "summary" : "Get folder by ID",
+        "description" : "Retrieve folder details by ID",
+        "operationId" : "getFolderById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/fetch" : {
+      "get" : {
+        "tags" : [ "Folder Management" ],
+        "summary" : "Get all folders",
+        "description" : "Retrieve paginated list of folders",
+        "operationId" : "getAllFolders",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FolderDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verify/{verificationId}" : {
+      "get" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "Public verify document",
+        "description" : "Verifies document by verification ID, returning safe public metadata with zero confidential leaks",
+        "operationId" : "verifyDocument",
+        "parameters" : [ {
+          "name" : "verificationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicVerificationDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/{verificationId}" : {
+      "get" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "Public verify document",
+        "description" : "Verifies document by verification ID, returning safe public metadata with zero confidential leaks",
+        "operationId" : "verifyDocument_1",
+        "parameters" : [ {
+          "name" : "verificationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicVerificationDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verify/records" : {
+      "get" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "List verification records",
+        "description" : "Retrieves all issued verification records and status (VERIFIER or ADMIN only)",
+        "operationId" : "getVerificationRecords",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/VerificationRecordDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/records" : {
+      "get" : {
+        "tags" : [ "9. Verification & QR" ],
+        "summary" : "List verification records",
+        "description" : "Retrieves all issued verification records and status (VERIFIER or ADMIN only)",
+        "operationId" : "getVerificationRecords_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/VerificationRecordDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/view" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View document inline",
+        "description" : "Streams the latest version of the document with inline disposition for preview",
+        "operationId" : "viewDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/view/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View document inline",
+        "description" : "Streams the latest version of the document with inline disposition for preview",
+        "operationId" : "viewDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/view" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View document inline",
+        "description" : "Streams the latest version of the document with inline disposition for preview",
+        "operationId" : "viewDocument_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/view/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View document inline",
+        "description" : "Streams the latest version of the document with inline disposition for preview",
+        "operationId" : "viewDocument_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/versions/{versionId}/view" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View historical version inline",
+        "description" : "Previews a specific historical version file in the browser",
+        "operationId" : "viewVersion",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions/{versionId}/view" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "View historical version inline",
+        "description" : "Previews a specific historical version file in the browser",
+        "operationId" : "viewVersion_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/versions/{versionId}/download" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download historical version",
+        "description" : "Downloads a specific historical version file as an attachment",
+        "operationId" : "downloadVersion",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions/{versionId}/download" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download historical version",
+        "description" : "Downloads a specific historical version file as an attachment",
+        "operationId" : "downloadVersion_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/versions/{versionId}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get version metadata",
+        "description" : "Retrieves metadata for a specific historical version",
+        "operationId" : "getVersionMetadata",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions/{versionId}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get version metadata",
+        "description" : "Retrieves metadata for a specific historical version",
+        "operationId" : "getVersionMetadata_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "versionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentVersionDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/qr" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document QR code image",
+        "description" : "Serves the generated PNG QR code image for document verification",
+        "operationId" : "getDocumentQrCode",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/qr" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document QR code image",
+        "description" : "Serves the generated PNG QR code image for document verification",
+        "operationId" : "getDocumentQrCode_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/download" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download document",
+        "description" : "Streams the latest version of the document as an attachment",
+        "operationId" : "downloadDocument",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/download/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download document",
+        "description" : "Streams the latest version of the document as an attachment",
+        "operationId" : "downloadDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/download" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download document",
+        "description" : "Streams the latest version of the document as an attachment",
+        "operationId" : "downloadDocument_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/download/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Download document",
+        "description" : "Streams the latest version of the document as an attachment",
+        "operationId" : "downloadDocument_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/approvals" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "getDocumentApprovals",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApprovalDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/approvals" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "operationId" : "getDocumentApprovals_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApprovalDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/getById/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document by ID",
+        "description" : "Retrieves document metadata and latest version details if authorized",
+        "operationId" : "getDocumentById_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/getById/{id}" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Get document by ID",
+        "description" : "Retrieves document metadata and latest version details if authorized",
+        "operationId" : "getDocumentById_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/trash" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List trash documents",
+        "description" : "Retrieves soft-deleted documents for the current user or all for ADMIN",
+        "operationId" : "getTrashDocuments",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DocumentDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/trash" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "List trash documents",
+        "description" : "Retrieves soft-deleted documents for the current user or all for ADMIN",
+        "operationId" : "getTrashDocuments_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DocumentDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/shared-with-me" : {
+      "get" : {
+        "tags" : [ "7. Document Sharing" ],
+        "summary" : "List documents shared with me",
+        "description" : "Retrieves paginated documents shared with the currently authenticated user",
+        "operationId" : "getDocumentsSharedWithMe",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "createdAt"
+          }
+        }, {
+          "name" : "direction",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "desc"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageSharedDocumentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/search" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Search documents",
+        "description" : "Executes full-text keyword search across metadata and OCR text with permission filtering",
+        "operationId" : "searchDocuments",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "owner",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseSearchResultDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/search" : {
+      "get" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Search documents",
+        "description" : "Executes full-text keyword search across metadata and OCR text with permission filtering",
+        "operationId" : "searchDocuments_1",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "owner",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseSearchResultDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me" : {
+      "get" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Get current authenticated user profile",
+        "description" : "Retrieves user details for the active JWT Bearer principal",
+        "operationId" : "getCurrentUser",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me" : {
+      "get" : {
+        "tags" : [ "1. Authentication" ],
+        "summary" : "Get current authenticated user profile",
+        "description" : "Retrieves user details for the active JWT Bearer principal",
+        "operationId" : "getCurrentUser_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit-logs/fetch" : {
+      "get" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Get all activity logs",
+        "description" : "Admin endpoint to retrieve legacy activity logs",
+        "operationId" : "getAllLogs_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ActivityLogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activity-logs/fetch" : {
+      "get" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Get all activity logs",
+        "description" : "Admin endpoint to retrieve legacy activity logs",
+        "operationId" : "getAllLogs_3",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ActivityLogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/approvals" : {
+      "get" : {
+        "tags" : [ "8. Approvals" ],
+        "summary" : "List approval requests",
+        "description" : "Retrieves paginated approvals filtered by status (PENDING, APPROVED, REJECTED, ALL)",
+        "operationId" : "getApprovals",
+        "parameters" : [ {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "PENDING"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseApprovalDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/approvals/{id}" : {
+      "get" : {
+        "tags" : [ "8. Approvals" ],
+        "summary" : "Get approval details",
+        "description" : "Retrieves details of a specific document approval request",
+        "operationId" : "getApprovalById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/uploads-by-month" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Uploads by month",
+        "description" : "Monthly document upload trend",
+        "operationId" : "getUploadsByMonth",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MonthlyCountDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/summary" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Analytics summary counts",
+        "description" : "Returns aggregated counts of documents, storage, pending approvals, and active users",
+        "operationId" : "getSummary",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AnalyticsSummaryDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/recent-activity" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Recent activity for analytics",
+        "description" : "Recent audit log activity for dashboard view",
+        "operationId" : "getRecentActivity",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AuditLogDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/documents-by-category" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Documents by category",
+        "description" : "Document distribution across categories",
+        "operationId" : "getDocumentsByCategory",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CategoryCountDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/approvals-by-month" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Approvals by month",
+        "description" : "Monthly approval and rejection trends",
+        "operationId" : "getApprovalsByMonth",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MonthlyApprovalDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Analytics root & scope",
+        "description" : "Returns analytics overview and user authorization scope",
+        "operationId" : "getAnalyticsRoot",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/" : {
+      "get" : {
+        "tags" : [ "Analytics & Reporting" ],
+        "summary" : "Analytics root & scope",
+        "description" : "Returns analytics overview and user authorization scope",
+        "operationId" : "getAnalyticsRoot_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users/{id}" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Get user by ID (admin)",
+        "description" : "Admin endpoint to retrieve a user profile by ID",
+        "operationId" : "getUserById_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Get user by ID (admin)",
+        "description" : "Admin endpoint to retrieve a user profile by ID",
+        "operationId" : "getUserById_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Get all users (admin)",
+        "description" : "Retrieve list of all users in the system",
+        "operationId" : "getAllUsers_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UserDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Get all users (admin)",
+        "description" : "Retrieve list of all users in the system",
+        "operationId" : "getAllUsers_2",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/UserDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/dashboard" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Admin dashboard status",
+        "description" : "Simple health/status ping for admin dashboard",
+        "operationId" : "adminDashboard",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/dashboard" : {
+      "get" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Admin dashboard status",
+        "description" : "Simple health/status ping for admin dashboard",
+        "operationId" : "adminDashboard_1",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/audit-logs/export" : {
+      "get" : {
+        "tags" : [ "Admin Audit Logs" ],
+        "summary" : "Export audit logs to CSV",
+        "description" : "Export filtered audit logs as downloadable CSV spreadsheet for external compliance inspection",
+        "operationId" : "exportAuditLogsCsv",
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string",
+                    "format" : "byte"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/audit-logs/export" : {
+      "get" : {
+        "tags" : [ "Admin Audit Logs" ],
+        "summary" : "Export audit logs to CSV",
+        "description" : "Export filtered audit logs as downloadable CSV spreadsheet for external compliance inspection",
+        "operationId" : "exportAuditLogsCsv_1",
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string",
+                    "format" : "byte"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/audit-logs" : {
+      "get" : {
+        "tags" : [ "Admin Audit Logs" ],
+        "summary" : "Query audit logs",
+        "description" : "Filterable, paginated query for security and compliance audit logs",
+        "operationId" : "getAuditLogs",
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 20
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "timestamp"
+          }
+        }, {
+          "name" : "direction",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "desc"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageAuditLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/audit-logs" : {
+      "get" : {
+        "tags" : [ "Admin Audit Logs" ],
+        "summary" : "Query audit logs",
+        "description" : "Filterable, paginated query for security and compliance audit logs",
+        "operationId" : "getAuditLogs_1",
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 20
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "timestamp"
+          }
+        }, {
+          "name" : "direction",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "desc"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageAuditLogDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "User Management" ],
+        "summary" : "Delete user",
+        "description" : "Admin-only endpoint to delete a user. Admin cannot delete their own account.",
+        "operationId" : "deleteUser",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "Folder Management" ],
+        "summary" : "Delete folder",
+        "description" : "Delete a folder",
+        "operationId" : "deleteFolder",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}/shares/{shareId}" : {
+      "delete" : {
+        "tags" : [ "7. Document Sharing" ],
+        "summary" : "Revoke document share",
+        "description" : "Revokes a user's shared access to a document",
+        "operationId" : "revokeShare",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "shareId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/api/documents/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Soft delete document",
+        "description" : "Flags the document as deleted, moving it to trash without erasing file storage",
+        "operationId" : "deleteDocument_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "4. Documents" ],
+        "summary" : "Soft delete document",
+        "description" : "Flags the document as deleted, moving it to trash without erasing file storage",
+        "operationId" : "deleteDocument_3",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit-logs/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Delete activity log",
+        "description" : "Delete an activity log entry by ID",
+        "operationId" : "deleteLog",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activity-logs/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "Activity Logs" ],
+        "summary" : "Delete activity log",
+        "description" : "Delete an activity log entry by ID",
+        "operationId" : "deleteLog_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/user/{id}" : {
+      "delete" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Delete user (admin)",
+        "description" : "Admin endpoint to permanently delete a user account",
+        "operationId" : "deleteUser_1",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/user/{id}" : {
+      "delete" : {
+        "tags" : [ "Admin Management" ],
+        "summary" : "Delete user (admin)",
+        "description" : "Admin endpoint to permanently delete a user account",
+        "operationId" : "deleteUser_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "RegisterDTO" : {
+        "required" : [ "email", "password", "username" ],
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "maxLength" : 100,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "maxLength" : 100,
+            "minLength" : 6,
+            "type" : "string"
+          },
+          "role" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UserDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "role" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "enabled" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "FolderDTO" : {
+        "type" : "object",
+        "properties" : {
+          "fol_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fol_name" : {
+            "maxLength" : 100,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "ownerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "description" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
+      "VerificationRecordDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentTitle" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "verificationId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "VALID", "REVOKED" ]
+          },
+          "currentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "ownerName" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "UpdateDocumentRequest" : {
+        "required" : [ "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "category" : {
+            "maxLength" : 100,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "description" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "tags" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "DocumentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "originalFileName" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "folderId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "currentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "verificationId" : {
+            "type" : "string"
+          },
+          "verificationStatus" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "contentType" : {
+            "type" : "string"
+          },
+          "checksum" : {
+            "type" : "string"
+          },
+          "tags" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "ownerEmail" : {
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "deletedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "ocrStatus" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "DONE", "FAILED", "SKIPPED" ]
+          },
+          "ocrErrorMessage" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "doc_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "doc_name" : {
+            "type" : "string"
+          },
+          "fileData" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          }
+        }
+      },
+      "UpdateRolesRequest" : {
+        "required" : [ "roles" ],
+        "type" : "object",
+        "properties" : {
+          "roles" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "UpdateEnabledRequest" : {
+        "required" : [ "enabled" ],
+        "type" : "object",
+        "properties" : {
+          "enabled" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "FileCheckResponseDTO" : {
+        "type" : "object",
+        "properties" : {
+          "verificationId" : {
+            "type" : "string"
+          },
+          "matches" : {
+            "type" : "boolean"
+          },
+          "matchedVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "uploadedFileChecksum" : {
+            "type" : "string"
+          },
+          "currentVersionChecksum" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ShareRequest" : {
+        "required" : [ "permission", "sharedWithEmail" ],
+        "type" : "object",
+        "properties" : {
+          "sharedWithEmail" : {
+            "type" : "string"
+          },
+          "permission" : {
+            "type" : "string",
+            "enum" : [ "VIEW", "DOWNLOAD" ]
+          },
+          "expiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "DocumentShareDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentTitle" : {
+            "type" : "string"
+          },
+          "sharedById" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "sharedByName" : {
+            "type" : "string"
+          },
+          "sharedByEmail" : {
+            "type" : "string"
+          },
+          "sharedWithId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "sharedWithName" : {
+            "type" : "string"
+          },
+          "sharedWithEmail" : {
+            "type" : "string"
+          },
+          "permission" : {
+            "type" : "string",
+            "enum" : [ "VIEW", "DOWNLOAD" ]
+          },
+          "expiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "expired" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DocumentVersionDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "versionNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "filePath" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "contentType" : {
+            "type" : "string"
+          },
+          "checksum" : {
+            "type" : "string"
+          },
+          "uploadedById" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "uploadedByName" : {
+            "type" : "string"
+          },
+          "uploadedByEmail" : {
+            "type" : "string"
+          },
+          "changeDescription" : {
+            "type" : "string"
+          },
+          "ocrStatus" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "DONE", "FAILED", "SKIPPED" ]
+          },
+          "ocrText" : {
+            "type" : "string"
+          },
+          "ocrErrorMessage" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "current" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RegisterRequest" : {
+        "required" : [ "email", "name", "password" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "pattern" : "^(?=.*[A-Za-z])(?=.*\\d).{8,}$",
+            "type" : "string"
+          }
+        }
+      },
+      "LoginRequest" : {
+        "required" : [ "email", "password" ],
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AuthResponse" : {
+        "type" : "object",
+        "properties" : {
+          "token" : {
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/UserDTO"
+          },
+          "accessToken" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ActivityLogDTO" : {
+        "type" : "object",
+        "properties" : {
+          "act_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "action" : {
+            "type" : "string"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ApprovalDecisionRequest" : {
+        "type" : "object",
+        "properties" : {
+          "comments" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
+      "ApprovalDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentTitle" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "ownerName" : {
+            "type" : "string"
+          },
+          "ownerEmail" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "APPROVED", "REJECTED" ]
+          },
+          "reviewerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "reviewerName" : {
+            "type" : "string"
+          },
+          "reviewerEmail" : {
+            "type" : "string"
+          },
+          "comments" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "PublicVerificationDTO" : {
+        "type" : "object",
+        "properties" : {
+          "verificationId" : {
+            "type" : "string"
+          },
+          "documentTitle" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "ownerDisplayName" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "issuedDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "currentVersionNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "checksum" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PageSharedDocumentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numberOfElements" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/SortObject"
+          },
+          "first" : {
+            "type" : "boolean"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SharedDocumentDTO"
+            }
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PageableObject" : {
+        "type" : "object",
+        "properties" : {
+          "paged" : {
+            "type" : "boolean"
+          },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/SortObject"
+          },
+          "offset" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SharedDocumentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "shareId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "documentTitle" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "originalFileName" : {
+            "type" : "string"
+          },
+          "currentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "sharedByName" : {
+            "type" : "string"
+          },
+          "sharedByEmail" : {
+            "type" : "string"
+          },
+          "permission" : {
+            "type" : "string",
+            "enum" : [ "VIEW", "DOWNLOAD" ]
+          },
+          "expiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sharedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "contentType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SortObject" : {
+        "type" : "object",
+        "properties" : {
+          "unsorted" : {
+            "type" : "boolean"
+          },
+          "sorted" : {
+            "type" : "boolean"
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PageResponseSearchResultDTO" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResultDTO"
+            }
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "last" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SearchResultDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "originalFileName" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "currentVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "contentType" : {
+            "type" : "string"
+          },
+          "snippet" : {
+            "type" : "string"
+          },
+          "matchSource" : {
+            "type" : "string"
+          },
+          "ocrStatus" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "DONE", "FAILED", "SKIPPED" ]
+          },
+          "ownerEmail" : {
+            "type" : "string"
+          },
+          "ownerName" : {
+            "type" : "string"
+          },
+          "tags" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "PageResponseApprovalDTO" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApprovalDTO"
+            }
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "last" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "MonthlyCountDTO" : {
+        "type" : "object",
+        "properties" : {
+          "month" : {
+            "type" : "string"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "AnalyticsSummaryDTO" : {
+        "type" : "object",
+        "properties" : {
+          "totalDocuments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "pendingApprovals" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "approvedDocuments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "rejectedDocuments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "verifiedDocuments" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "activeUsers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "storageUsedBytes" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "AuditLogDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "userName" : {
+            "type" : "string"
+          },
+          "userEmail" : {
+            "type" : "string"
+          },
+          "action" : {
+            "type" : "string"
+          },
+          "entityType" : {
+            "type" : "string"
+          },
+          "entityId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ipAddress" : {
+            "type" : "string"
+          },
+          "details" : {
+            "type" : "string"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "CategoryCountDTO" : {
+        "type" : "object",
+        "properties" : {
+          "category" : {
+            "type" : "string"
+          },
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "MonthlyApprovalDTO" : {
+        "type" : "object",
+        "properties" : {
+          "month" : {
+            "type" : "string"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "approved" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "rejected" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PageAuditLogDTO" : {
+        "type" : "object",
+        "properties" : {
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numberOfElements" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/SortObject"
+          },
+          "first" : {
+            "type" : "boolean"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AuditLogDTO"
+            }
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "description" : "Enter your JWT Bearer token obtained from the /api/auth/login endpoint. Format: Bearer <token>",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}

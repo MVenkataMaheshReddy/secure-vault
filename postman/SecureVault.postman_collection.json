@@ -1,0 +1,921 @@
+{
+  "info": {
+    "name": "SecureVault API Collection",
+    "description": "Comprehensive Postman Collection covering all SecureVault endpoints: Auth, User, Admin, Document Lifecycle, Versioning, Fulltext Search, Sharing, Approval Workflow, QR Verification, Analytics, Folders, and Activity Logs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Employee\",\n  \"email\": \"emp_postman_test@securevault.com\",\n  \"password\": \"Employee@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created or 409 Conflict\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Token received and set in environment\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var token = jsonData.accessToken || jsonData.token;",
+                  "    pm.expect(token).to.not.be.undefined;",
+                  "    pm.environment.set(\"jwt_token\", token);",
+                  "    if (jsonData.user && jsonData.user.id) {",
+                  "        pm.environment.set(\"user_id\", jsonData.user.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User Profile (/me)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().email).to.eql(pm.environment.get(\"admin_email\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. User Management",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User Updated\",\n  \"department\": \"IT Security\",\n  \"phoneNumber\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Admin@12345\",\n  \"newPassword\": \"Admin@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "change-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Admin Management",
+      "item": [
+        {
+          "name": "List All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var users = pm.response.json();",
+                  "    pm.expect(users).to.be.an('array');",
+                  "    if (users.length > 0) {",
+                  "        pm.environment.set(\"test_user_id\", users[0].id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User Roles (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roles\": [\"EMPLOYEE\", \"REVIEWER\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{test_user_id}}/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{test_user_id}}", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Update User Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{test_user_id}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{test_user_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Admin Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/audit-logs?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Documents Management",
+      "item": [
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "" },
+                { "key": "title", "value": "Financial Audit Report 2026", "type": "text" },
+                { "key": "category", "value": "FINANCIAL", "type": "text" },
+                { "key": "description", "value": "Quarterly financial records and balance sheets", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "upload"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.environment.set(\"document_id\", json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Documents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Document Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Document Metadata",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Financial Audit Report 2026\",\n  \"category\": \"FINANCIAL\",\n  \"description\": \"Updated description with additional notes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}"]
+            }
+          }
+        },
+        {
+          "name": "View Document Inline",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/view",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "view"]
+            }
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "download"]
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Document",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}"]
+            }
+          }
+        },
+        {
+          "name": "List Trash Documents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/trash",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "trash"]
+            }
+          }
+        },
+        {
+          "name": "Restore Document from Trash",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "restore"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Document Versions",
+      "item": [
+        {
+          "name": "List Document Versions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var versions = pm.response.json();",
+                  "    if (versions.length > 0) {",
+                  "        pm.environment.set(\"version_id\", versions[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Upload New Version",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "" },
+                { "key": "changeDescription", "value": "Updated with revisions", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions"]
+            }
+          }
+        },
+        {
+          "name": "Get Version Metadata",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions/{{version_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions", "{{version_id}}"]
+            }
+          }
+        },
+        {
+          "name": "View Version Inline",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions/{{version_id}}/view",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions", "{{version_id}}", "view"]
+            }
+          }
+        },
+        {
+          "name": "Download Version",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions/{{version_id}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions", "{{version_id}}", "download"]
+            }
+          }
+        },
+        {
+          "name": "Restore Version",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/versions/{{version_id}}/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "versions", "{{version_id}}", "restore"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Search & Discovery",
+      "item": [
+        {
+          "name": "Search Documents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/search?q=Report&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "search"],
+              "query": [
+                { "key": "q", "value": "Report" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Document Sharing",
+      "item": [
+        {
+          "name": "Share Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sharedWithEmail\": \"emp_postman_test@securevault.com\",\n  \"permission\": \"VIEW\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/shares",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "shares"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.environment.set(\"share_id\", pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Document Shares",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/shares",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "shares"]
+            }
+          }
+        },
+        {
+          "name": "List Documents Shared With Me",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/shared-with-me?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "shared-with-me"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revoke Document Share",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/shares/{{share_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "shares", "{{share_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Document Approvals",
+      "item": [
+        {
+          "name": "List Approvals (Reviewer/Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/approvals?status=PENDING&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "approvals"],
+              "query": [
+                { "key": "status", "value": "PENDING" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.content && json.content.length > 0) {",
+                  "        pm.environment.set(\"approval_id\", json.content[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Approval Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/approvals/{{approval_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "approvals", "{{approval_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Approve Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comments\": \"Approved by compliance officer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/approvals/{{approval_id}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "approvals", "{{approval_id}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Reject Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comments\": \"Rejected due to missing certification seal\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/approvals/{{approval_id}}/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "approvals", "{{approval_id}}", "reject"]
+            }
+          }
+        },
+        {
+          "name": "Document Approval History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/approvals/documents/{{document_id}}/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "approvals", "documents", "{{document_id}}", "history"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Verification & QR",
+      "item": [
+        {
+          "name": "Get Document QR Code",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/{{document_id}}/qr",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "documents", "{{document_id}}", "qr"]
+            }
+          }
+        },
+        {
+          "name": "Public Verification",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/verify/{{verification_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "verify", "{{verification_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Public Check File Authenticity",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/verify/{{verification_id}}/check-file",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "verify", "{{verification_id}}", "check-file"]
+            }
+          }
+        },
+        {
+          "name": "Verifier Records List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/verify/records",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "verify", "records"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Folders",
+      "item": [
+        {
+          "name": "List Folders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/folders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "folders"]
+            }
+          }
+        },
+        {
+          "name": "Create Folder",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Financial Statements 2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/folders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "folders"]
+            }
+          }
+        },
+        {
+          "name": "Get Folder by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/folders/{{folder_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "folders", "{{folder_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Folder",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/folders/{{folder_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "folders", "{{folder_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Activity Logs",
+      "item": [
+        {
+          "name": "Get My Activity Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/my-activity?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activity-logs", "my-activity"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Analytics Dashboard",
+      "item": [
+        {
+          "name": "Analytics Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Analytics Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Analytics Monthly Uploads",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/monthly-uploads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "monthly-uploads"]
+            }
+          }
+        },
+        {
+          "name": "Analytics Monthly Approvals",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/monthly-approvals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "monthly-approvals"]
+            }
+          }
+        },
+        {
+          "name": "Analytics Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/audit-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "audit-logs"]
+            }
+          }
+        },
+        {
+          "name": "Analytics User Activity",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/user-activity",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "user-activity"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
